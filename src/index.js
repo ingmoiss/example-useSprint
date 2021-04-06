@@ -1,17 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { render } from 'react-dom'
+import React, { useState } from 'react'
+import { useSpring, animated } from 'react-spring'
+import useMeasure from './useMeasure'
+import './styles.css'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function App() {
+  const [open, toggle] = useState(false)
+  const [bind, { width }] = useMeasure()
+  const props = useSpring({ width: open ? width : 0 })
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  return (
+    <div {...bind} className="main" onClick={() => toggle(!open)}>
+      <animated.div className="fill" style={props} />
+      <animated.div className="content">{props.width.interpolate(x => x.toFixed(0))}</animated.div>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root'))
